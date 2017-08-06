@@ -1,0 +1,51 @@
+GIT
+  remote: https://github.com/karfai/radish.git
+  revision: d530c1f3890dc97a24a72c531c1229dc35a51cde
+  specs:
+    radish (0.0.2)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    amq-protocol (2.2.0)
+    bunny (2.6.6)
+      amq-protocol (>= 2.1.0)
+    coderay (1.1.1)
+    foreman (0.84.0)
+      thor (~> 0.19.1)
+    method_source (0.8.2)
+    multi_json (1.12.1)
+    pry (0.10.4)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
+      slop (~> 3.4)
+    rake (12.0.0)
+    serverengine (1.5.11)
+      sigdump (~> 0.2.2)
+    sigdump (0.2.4)
+    slop (3.6.0)
+    sneakers (2.5.0)
+      bunny (~> 2.6.4)
+      serverengine (~> 1.5.11)
+      thor
+      thread (~> 0.1.7)
+    thor (0.19.4)
+    thread (0.1.7)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bunny
+  foreman
+  multi_json
+  pry
+  radish!
+  rake
+  sneakers
+
+RUBY VERSION
+   ruby 2.3.3p222
+
+BUNDLED WITH
+   1.15.2
