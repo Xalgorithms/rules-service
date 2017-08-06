@@ -1,0 +1,40 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+
+require 'bunny'
+require 'logger'
+require 'multi_json'
+require 'sneakers'
+
+root = File.expand_path('../lib', File.dirname(__FILE__))
+$: << root
+
+require 'tasks'
+
+$stdout.sync = true
+logger = Logger.new($stdout)
+
+logger.info('starting connection')
+conn = Bunny.new(ENV['RABBITMQ_URL'])
+conn.start
+ch = conn.create_channel
+logger.info('started connection')
+
+logger.info('configuring inbound exchange')
+name = 'xa.rules.requests'
+ex = ch.direct(name, auto_delete: true)
+
+logger.info('binding queue')
+q = ch.queue('', exclusive: true)
+q.bind(name)
+
+Sneakers.configure(amqp: ENV['RABBITMQ_URL'], daemonize: false, log: STDOUT)
+Sneakers.logger.level = Logger::INFO
+publisher = Sneakers::Publisher.new
+
+logger.info('listening')
+q.subscribe(block: true) do |di, props, body|
+  o = MultiJson.decode(body)
+  publisher.publish(MultiJson.encode(o), to_queue: 'tasks');
+end
