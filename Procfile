@@ -1,2 +1,2 @@
-events: bin/events
+events: bin/tasks
 inbound: bin/inbound

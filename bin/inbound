@@ -7,13 +7,21 @@ require 'logger'
 require 'multi_json'
 require 'sneakers'
 
-root = File.expand_path('../lib', File.dirname(__FILE__))
-$: << root
-
-require 'tasks'
-
 $stdout.sync = true
 logger = Logger.new($stdout)
+
+Sneakers.configure(amqp: ENV['RABBITMQ_URL'], daemonize: false, log: STDOUT)
+Sneakers.logger.level = Logger::INFO
+publisher = Sneakers::Publisher.new
+
+ACTIONS = {
+  'documents' => {
+    'document.created' => lambda do |o|
+      logger.info("# triggering envelope processing")
+      publisher.publish(MultiJson.encode(o), to_queue: 'envelope');
+    end,
+  },
+}
 
 logger.info('starting connection')
 conn = Bunny.new(ENV['RABBITMQ_URL'])
@@ -23,18 +31,26 @@ logger.info('started connection')
 
 logger.info('configuring inbound exchange')
 name = 'xa.rules.requests'
-ex = ch.direct(name, auto_delete: true)
+ex = ch.direct(name, durable: true)
 
 logger.info('binding queue')
 q = ch.queue('', exclusive: true)
 q.bind(name)
 
-Sneakers.configure(amqp: ENV['RABBITMQ_URL'], daemonize: false, log: STDOUT)
-Sneakers.logger.level = Logger::INFO
-publisher = Sneakers::Publisher.new
-
 logger.info('listening')
 q.subscribe(block: true) do |di, props, body|
+  logger.info("> received (body=#{body})")
+  
   o = MultiJson.decode(body)
-  publisher.publish(MultiJson.encode(o), to_queue: 'tasks');
+  origin = o.fetch('origin', nil)
+  name = o.fetch('name', nil)
+  logger.info("# finding action (origin=#{origin}; name=#{name})")
+  fn = ACTIONS.fetch(origin, {}).fetch(name, nil)
+  if fn
+    details = o.fetch('details', nil)
+    logger.info("# invoking (o=#{details})")
+    fn.call(details)
+  else
+    logger.warn('? nothing found')
+  end
 end
