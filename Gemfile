@@ -14,3 +14,7 @@ gem 'pry'
 gem 'radish', github: 'karfai/radish'
 gem 'rake'
 gem 'sneakers'
+
+# ours
+gem 'xa-clients', github: 'Xalgorithms/xa-clients'
+# gem 'xa-clients', path: '../../libs/clients'

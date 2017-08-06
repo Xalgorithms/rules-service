@@ -1,4 +1,13 @@
 GIT
+  remote: https://github.com/Xalgorithms/xa-clients.git
+  revision: af43fc6ed08cb55f4827d348479bbe251bddf9ce
+  specs:
+    xa-clients (0.0.1)
+      faraday
+      faraday_middleware
+      multi_json (~> 1.11)
+
+GIT
   remote: https://github.com/karfai/radish.git
   revision: d530c1f3890dc97a24a72c531c1229dc35a51cde
   specs:
@@ -11,10 +20,15 @@ GEM
     bunny (2.6.6)
       amq-protocol (>= 2.1.0)
     coderay (1.1.1)
+    faraday (0.12.2)
+      multipart-post (>= 1.2, < 3)
+    faraday_middleware (0.12.2)
+      faraday (>= 0.7.4, < 1.0)
     foreman (0.84.0)
       thor (~> 0.19.1)
     method_source (0.8.2)
     multi_json (1.12.1)
+    multipart-post (2.0.0)
     pry (0.10.4)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -43,6 +57,7 @@ DEPENDENCIES
   radish!
   rake
   sneakers
+  xa-clients!
 
 RUBY VERSION
    ruby 2.3.3p222
