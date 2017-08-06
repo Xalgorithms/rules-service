@@ -1,7 +1,7 @@
 require_relative './worker'
 
-class Tasks < Worker
-  from_queue :tasks
+class Envelope < Worker
+  from_queue :envelope
 
   def event(o)
   end

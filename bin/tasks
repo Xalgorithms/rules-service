@@ -7,10 +7,10 @@ require 'logger'
 root = File.expand_path('../lib', File.dirname(__FILE__))
 $: << root
 
-require 'tasks'
+require 'envelope'
 
 Sneakers.configure(amqp: ENV['RABBITMQ_URL'], daemonize: false, log: STDOUT)
 Sneakers.logger.level = Logger::INFO
 
-runner = Sneakers::Runner.new([Tasks])
+runner = Sneakers::Runner.new([Envelope])
 runner.run
